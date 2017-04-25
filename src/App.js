@@ -2,42 +2,50 @@ import React, { Component } from 'react';
 import './App.css';
 import ReactMotionUiPackHoc from './ReactMotionUiPackHoc';
 
-const options = ['grow', 'fadeIn', 'slideRight', 'fadeOut'];
+const options = [
+  'grow',
+  'fadeIn',
+  'slideRight',
+  'slideLeft',
+  'slideUp',
+  'slideDown',
+  'fadeOut'
+];
 
 export default class App extends Component {
   state = {
-    animationToAdd: '',
+    animationToAdd: 'grow',
     demoArray: ['grow'],
   };
 
-  setAnimationToAd = event => this.setState({ animationToAdd: event.target.value });
+  setAnimationToAdd = event => this.setState({ animationToAdd: event.target.value });
 
   addToDemo = () => {
     const { animationToAdd, demoArray } = this.state;
 
-    if (animationToAdd === '') return;
-
-    this.setState({
-      demoArray: demoArray.concat(animationToAdd),
-      animationToAdd: '',
-    });
+    this.setState({ demoArray: demoArray.concat(animationToAdd)});
   };
 
-  renderDemo = () => {
-    return this.state.demoArray.map((animationType, index) => {
-      const color = 'red';
-      const className = 'box ' + color;
-      const key = animationType + ' ' + color;
+  removeEl = (index) => {
+    const demoArray = this.state.demoArray.filter((el, i) => i !== index);
 
-      return (
-        <ReactMotionUiPackHoc key={key} animationType={animationType}>
-          <div key={key} className={className}>
+    this.setState({ demoArray });
+  };
+
+  renderDemo = () => (
+    this.state.demoArray.map((animationType, index) => (
+      <ReactMotionUiPackHoc key={index} animationType={animationType}>
+        <div key={index} className='box red'>
+          <div className='label'>
             {animationType}
+            <div onClick={() => this.removeEl(index)}>
+              X Remove
+            </div>
           </div>
-        </ReactMotionUiPackHoc>
-      )
-    });
-  };
+        </div>
+      </ReactMotionUiPackHoc>
+    ))
+  );
 
   render() {
     return (
@@ -50,8 +58,13 @@ export default class App extends Component {
             </option>
           ))}
         </select>
-        <button type="submit" value="+" onClick=(this.addToDemo) />
-        {this.renderDemo()}
+        <br/>
+        <button type="submit" onClick={this.addToDemo}>
+          + Add to demo
+        </button>
+        <div className='demo-wrapper'>
+          {this.renderDemo()}
+        </div>
       </div>
     );
   }
