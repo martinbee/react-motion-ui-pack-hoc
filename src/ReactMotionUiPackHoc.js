@@ -1,14 +1,26 @@
 import React from 'react';
 import Transition from 'react-motion-ui-pack';
 
-export default function ReactMotionUiPackHoc({ animationType, component=false, children, ...rest }) {
-  const getAnimation = () => { return { apper: { opacity: 0 }, enter: { opacity: 0 }, leave: { opacity: 1 } }};
-  const { enter, leave, appear } = getAnimation();
+import getAnimation from './getAnimation';
 
-  console.log(...rest);
+export default function ReactMotionUiPackHoc(
+  { animationType, component=false, children, ...other}
+) {
+  const { appear, enter, leave } = getAnimation(animationType);
+
+  console.log(appear, enter, leave);
+
+  // explicitly set enter, leave, and appear to null and handle it here or set
+  // it to {} in getAnimation
   return (
-    <Transition appear={appear} enter={enter} leave={leave} component={component} {...rest}>
-      { children }
+    <Transition
+      appear={appear}
+      enter={enter}
+      leave={leave}
+      component={component}
+      {...other}
+    >
+      {children}
     </Transition>
   );
 }
